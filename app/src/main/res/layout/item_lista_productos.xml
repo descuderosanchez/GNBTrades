@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_row_list_products"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_weight="0"
+        android:id="@+id/linearLayout"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="2.7"
+            android:text="SKU:"
+            android:id="@+id/txt_sku"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:textSize="@dimen/size_text_tittle_sku"
+            android:gravity="center_vertical" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="2"
+            android:text="PruebaaProd"
+            android:id="@+id/tittle_sku"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/size_text_tittle_sku" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="2.3"
+            android:gravity="center_vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10.00"
+                android:id="@+id/amount"
+                android:gravity="bottom"
+                android:textSize="@dimen/size_text_amount" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="USD"
+                android:id="@+id/currency"
+                android:textSize="@dimen/size_text_currency"
+                android:layout_toRightOf="@+id/amount"
+                android:layout_toEndOf="@+id/amount"
+                android:gravity="bottom"
+                android:layout_alignBottom="@+id/amount" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>
