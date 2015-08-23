@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 /**
  * Created by David on 23/8/15.
-
+ * Clase que contiene los datos descargados.
  */
 public class DataGNB {
     //URL DE DONDE NOS PROVIENE LA INFORMACIÓN.

@@ -4,23 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
-import java.util.ArrayList;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-
-    public static String URL_CONVERSIONS = "http://quiet-stone-2094.herokuapp.com/rates";
-    public static String URL_TRANSACTIONS = "http://quiet-stone-2094.herokuapp.com/transactions";
-
-    public static ArrayList<ConversionDivisas> conversiones = new ArrayList<ConversionDivisas>();
-    public static ArrayList<Transaccion> transacciones = new ArrayList<Transaccion>();
 
     public ListView listView;
 
@@ -31,28 +24,48 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Declaración de View's...
+        listView = (ListView) findViewById(R.id.listView);
+        //...Fin declación de View's
+
         //Chequeamos que haya red en el dispositivo.
+        inicializarDatos();
+
+    }
+
+    /**
+     * Comprueba en el dispositivo que hay red disponible.
+     * @return [TRUE si hay Red.]
+     *         [FALSE si no hay Red.]
+     */
+    public boolean isConnected(){
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            //cargarConversionDivisas();
-            //cargarTransacciones();
-            //adapter = new AdapterListProducts(MainActivity.this, transacciones);
-            dataGNB = new DataGNB(MainActivity.this);
-            dataGNB.iniciarDescarga();
-            listView = (ListView) findViewById(R.id.listView);
-            listView.setAdapter(dataGNB.getAdapter());
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent intent = new Intent(MainActivity.this, ListDetailActivity.class);
-                    intent.putExtra("sku", dataGNB.getTransacciones().get(position).getSkuTittle());
-                    //intent.putExtra("dataGNB", dataGNB);
-                    startActivity(intent);
-                }
-            });
-        } else {
-            // display error
+        if (networkInfo != null) {
+            return networkInfo.isConnected();
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Si el dispositivo tiene red descarga los datos de las URL de los webservice.
+     */
+    public void inicializarDatos(){
+        if(isConnected()){
+        dataGNB = new DataGNB(MainActivity.this);
+        dataGNB.iniciarDescarga();
+        listView.setAdapter(dataGNB.getAdapter());
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(MainActivity.this, ListDetailActivity.class);
+                intent.putExtra("sku", dataGNB.getTransacciones().get(position).getSkuTittle());
+                startActivity(intent);
+            }
+        });
+        }else{
+            Toast.makeText(this, this.getText(R.string.network_error), Toast.LENGTH_LONG).show();
         }
 
     }
@@ -73,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            inicializarDatos();
             return true;
         }
 

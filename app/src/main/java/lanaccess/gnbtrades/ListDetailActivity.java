@@ -28,6 +28,8 @@ public class ListDetailActivity extends AppCompatActivity implements ListDetailP
         //Recibimos los datos del SKU que vamos a mostrar.
         String sku = getIntent().getStringExtra("sku");
 
+        //Ponemos flecha hacia atras en ActionBar.
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //Declaración de View's...
         textViewTotalSuma = (TextView) findViewById(R.id.amount);
         listView = (ListView) findViewById(R.id.listView);
@@ -54,6 +56,11 @@ public class ListDetailActivity extends AppCompatActivity implements ListDetailP
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+
+        if(id == android.R.id.home){
+            finish();
             return true;
         }
 

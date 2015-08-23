@@ -4,4 +4,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_lista_de_producto_seleccionado">Detalles de producto</string>
+    <string name="network_error">No hay red en el dispositivo.</string>
+    <string name="actualizar">Actualizar</string>
 </resources>
