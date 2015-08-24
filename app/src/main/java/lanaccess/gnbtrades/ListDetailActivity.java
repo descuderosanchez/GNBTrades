@@ -78,7 +78,7 @@ public class ListDetailActivity extends AppCompatActivity implements ListDetailP
 
     @Override
     public void onBackPressed() {
-        Log.d("CDA", "onBackPressed Called");
+        Log.d("GNB", "onBackPressed Called");
         listDetailProduct.cancelObtenerDatos();
         super.onBackPressed();
     }

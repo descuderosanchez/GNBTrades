@@ -8,4 +8,5 @@
     <dimen name="height_bottombar_total_amount">53dp</dimen>
     <dimen name="size_text_currency">16sp</dimen>
     <dimen name="height_shadow_bottombar">4dp</dimen>
+    <dimen name="size_tittle_skus">30sp</dimen>
 </resources>

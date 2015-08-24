@@ -15,6 +15,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by David on 23/8/15.
@@ -29,16 +32,23 @@ public class DataGNB {
     private static ArrayList<ConversionDivisas> conversiones = new ArrayList<ConversionDivisas>();
     private static ArrayList<Transaccion> transacciones = new ArrayList<Transaccion>();
 
+    //Lista de Strings que contiene todos los SKU's
+    private List<String> listStringOfSkus = new ArrayList<>();
+    private static ArrayList<Transaccion> skuList = new ArrayList<Transaccion>();
+
     //Adapter que vamos a utilizar para actualizar la información.
     private AdapterListProducts adapter;
 
     private Activity context;
+
+    private boolean isSkuUnicos = false;
 
     //Constructor
     public DataGNB(Activity context){
         this.context = context;
         //Creamos el nuevo adapter vinculado a nuestra actividad.
         adapter = new AdapterListProducts(context, transacciones);
+        isSkuUnicos = false;
     }
 
     /**
@@ -61,8 +71,43 @@ public class DataGNB {
     public AdapterListProducts getAdapter() {
         return adapter;
     }
+
+    public String getSkuOfPosition(int position){
+        if(isSkuUnicos){
+            return skuList.get(position).getSkuTittle();
+        }else{
+            return transacciones.get(position).getSkuTittle();
+        }
+    }
+
+    public boolean isSkuUnicos(){
+        return isSkuUnicos;
+    }
+
+    public List<String> getListStringOfSkus(){
+        return listStringOfSkus;
+    }
     //...FIN GETTERS
 
+    /**
+     * Cambia el AdapterList para mostrar los SKU's Unicos de todas las transacciones.
+     */
+    public void changeViewStatus(){
+        //Si la vista actual es de todas las transacciones cambiamos a Sku's únicos y viceversa.
+        if(isSkuUnicos) {
+            isSkuUnicos = false;
+            adapter = new AdapterListProducts(context, transacciones);
+        }else{
+            isSkuUnicos = true;
+            adapter = new AdapterListProducts(context, skuList, true);
+        }
+    }
+
+    public boolean existSku(String skuTittle){
+        for(String s : listStringOfSkus)
+            if(s.equals(skuTittle.toUpperCase())) return true;
+        return false;
+    }
 
     /**
      * Dada una URL de un WebService descarga sus datos y los pasa a StringBuilder
@@ -138,6 +183,7 @@ public class DataGNB {
                                 adapter.notifyDataSetChanged();
                             }
                             adapter.setNotifyOnChange(true);
+                            prepararVistaDeSoloSkus();
                         } else {
                             //Parseamos Conversiones.
                             JSONArray jsonArray = new JSONArray(builder.toString());
@@ -155,6 +201,21 @@ public class DataGNB {
             }
         };
         task.execute((Void[]) null);
+    }
+
+    private void prepararVistaDeSoloSkus(){
+        listStringOfSkus = new ArrayList<>();
+        skuList = new ArrayList<Transaccion>();
+        for(Transaccion t : transacciones){
+            listStringOfSkus.add(t.getSkuTittle());
+        }
+        Set<String> hs = new HashSet<>();
+        hs.addAll(listStringOfSkus);
+        listStringOfSkus.clear();
+        listStringOfSkus.addAll(hs);
+        for(String s : listStringOfSkus){
+            skuList.add(new Transaccion(s));
+        }
     }
 
 }

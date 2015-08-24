@@ -1,11 +1,13 @@
 package lanaccess.gnbtrades;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
 
     public DataGNB dataGNB = null;
 
+    public Menu menu;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.listView);
         //...Fin declación de View's
 
-        //Chequeamos que haya red en el dispositivo.
+        //Inicializamos los datos para visualizarlos.
         inicializarDatos();
 
     }
@@ -50,7 +54,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Si el dispositivo tiene red descarga los datos de las URL de los webservice.
+     * Si el dispositivo tiene red descarga los datos de las URL de los webservice y muestra los
+     * datos.
      */
     public void inicializarDatos(){
         if(isConnected()){
@@ -60,20 +65,41 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(MainActivity.this, ListDetailActivity.class);
-                intent.putExtra("sku", dataGNB.getTransacciones().get(position).getSkuTittle());
+                intent.putExtra("sku", dataGNB.getSkuOfPosition(position));
                 startActivity(intent);
             }
         });
         }else{
-            Toast.makeText(this, this.getText(R.string.network_error), Toast.LENGTH_LONG).show();
+            showToast(this.getText(R.string.network_error).toString());
         }
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        //Inicializamos variable 'menu' para poderlo modificar dinamicamente.
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if(dataGNB.existSku(query)){
+                    return false;
+                }
+                showToast(query + " " + MainActivity.this.getText(R.string.not_found).toString());
+                return true;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        this.menu = menu;
         return true;
     }
 
@@ -84,14 +110,43 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        //Item para actualizar los datos y descargarlos de nuevo.
         if (id == R.id.action_settings) {
             inicializarDatos();
+            updateMenuTittles();
+            return true;
+        }
+
+        /*Item para cambiar el estado de la vista a los SKU Unicos.
+         *Así es más sencillo buscar un SKU especifico entre todas las transacciones.
+         */
+        if (id == R.id.mostrar_sku) {
+            dataGNB.changeViewStatus();
+            listView.setAdapter(dataGNB.getAdapter());
+            updateMenuTittles();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Cambiamos el titulo de 'Mostrar SKUs' a 'Mostrar todas las transacciones'
+     */
+    private void updateMenuTittles() {
+        MenuItem skuUnicos = menu.findItem(R.id.mostrar_sku);
+        if (dataGNB.isSkuUnicos()) {
+            skuUnicos.setTitle(getString(R.string.todos_las_transacciones));
+        } else {
+            skuUnicos.setTitle(getString(R.string.solo_sku));
+        }
+    }
 
+    /**
+     * Función que muestra un Toast con un texto dado.
+     * @param s Texto a mostrar en el Toast.
+     */
+    private void showToast(String s){
+        Toast.makeText(this, s, Toast.LENGTH_LONG).show();
+    }
 }

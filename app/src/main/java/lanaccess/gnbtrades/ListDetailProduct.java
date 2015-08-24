@@ -17,27 +17,23 @@ public class ListDetailProduct {
 
     //Lista de productos que tienen el mismo SKU.
     private ArrayList<Transaccion> transacciones = new ArrayList<Transaccion>();
-
     //Auxiliar de transacciones.
     private ArrayList<Transaccion> transaccionesaux = new ArrayList<Transaccion>();
     //Todas las conversiones.
     private ArrayList<ConversionDivisas> conversiones = new ArrayList<ConversionDivisas>();
-
     //Adapter que vamos a utilizar para actualizar la información.
     private AdapterListProducts adapter;
-
     //Total en euros.
     private BigDecimal totalEur;
     //Total en double
     private Double sumaTotal;
-
     //Listener para cambiar views en activity.
     private TotalEurChangedListener totalEurChangedListener;
-
-
+    //Activity Context that create this class.
     private Activity context;
-
+    //Asynctask de recopilar los productos de un SKU especifico y calcular el total ganado.
     private AsyncTask obtenerDatos;
+
 
     public ListDetailProduct(Activity context, ArrayList<ConversionDivisas> conversiones,
                              final ArrayList<Transaccion> todasTransacciones, final String sku){
@@ -49,7 +45,6 @@ public class ListDetailProduct {
         AsyncTask obtenerDatos = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-
                 return null;
             }
             @Override

@@ -16,6 +16,10 @@ public class Transaccion {
         this.currency = currency;
     }
 
+    public Transaccion(String skuTittle) {
+        this.skuTittle = skuTittle;
+    }
+
     //GETTER Y SETTERS...
 
     public String getCurrency() {

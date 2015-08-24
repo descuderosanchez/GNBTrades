@@ -3,4 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
     <item android:id="@+id/action_settings" android:title="@string/actualizar"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/mostrar_sku" android:title="@string/solo_sku"
+        android:orderInCategory="200" app:showAsAction="never" />
+    <item android:id="@+id/search"
+        android:icon="@drawable/ic_search"
+        app:showAsAction="collapseActionView|ifRoom"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        android:title="" />
 </menu>

@@ -6,4 +6,9 @@
     <string name="title_activity_lista_de_producto_seleccionado">Detalles de producto</string>
     <string name="network_error">No hay red en el dispositivo.</string>
     <string name="actualizar">Actualizar</string>
+    <string name="solo_sku">Mostrar SKU\'s</string>
+    <string name="todos_las_transacciones">Mostrar todo</string>
+    <string name="search_title">SKU Tittle</string>
+    <string name="search_hint">SKU Tittle</string>
+    <string name="not_found">no encontrado.</string>
 </resources>
