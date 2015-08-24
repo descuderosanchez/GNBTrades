@@ -67,8 +67,8 @@ public class ListDetailProduct {
     }
 
     //GETTERS...
-    public BigDecimal getTotalEur() {
-        return totalEur;
+    public BigDecimal getTotalEurOfItem(int position) {
+        return new BigDecimal(sumaDivisas(transacciones.get(position))).setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
     public AdapterListProducts getAdapter() {

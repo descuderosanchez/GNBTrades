@@ -34,11 +34,10 @@ public class MainActivity extends AppCompatActivity {
 
         //Inicializamos los datos para visualizarlos.
         inicializarDatos();
-
     }
 
     /**
-     * Comprueba en el dispositivo que hay red disponible.
+     * Comprueba que hay red en el dispositivo.
      * @return [TRUE si hay Red.]
      *         [FALSE si no hay Red.]
      */
@@ -59,16 +58,17 @@ public class MainActivity extends AppCompatActivity {
      */
     public void inicializarDatos(){
         if(isConnected()){
-        dataGNB = new DataGNB(MainActivity.this);
-        dataGNB.iniciarDescarga();
-        listView.setAdapter(dataGNB.getAdapter());
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            dataGNB = new DataGNB(MainActivity.this);
+            listView.setAdapter(dataGNB.getAdapter());
+            dataGNB.iniciarDescarga();
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(MainActivity.this, ListDetailActivity.class);
                 intent.putExtra("sku", dataGNB.getSkuOfPosition(position));
                 startActivity(intent);
             }
-        });
+            });
+            dataGNB.getAdapter().notifyDataSetChanged();
         }else{
             showToast(this.getText(R.string.network_error).toString());
         }
@@ -105,9 +105,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //Item para actualizar los datos y descargarlos de nuevo.
@@ -131,7 +128,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Cambiamos el titulo de 'Mostrar SKUs' a 'Mostrar todas las transacciones'
+     * Si estamos viendo solo los SKU's cambiamos el titulo a 'Mostrar _todo'.
+     * Si estamos viendo la lista completa cambiamos a 'Mostrar SKUs'
      */
     private void updateMenuTittles() {
         MenuItem skuUnicos = menu.findItem(R.id.mostrar_sku);
@@ -149,4 +147,17 @@ public class MainActivity extends AppCompatActivity {
     private void showToast(String s){
         Toast.makeText(this, s, Toast.LENGTH_LONG).show();
     }
+
+    @Override
+    public void onBackPressed() {
+        // TODO Auto-generated method stub
+        super.onBackPressed();
+        finish();
+        System.exit(0);
+    }
+
+
+
+
+
 }

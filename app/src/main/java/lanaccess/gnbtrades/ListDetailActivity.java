@@ -3,10 +3,12 @@ package lanaccess.gnbtrades;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by David on 23/8/15.
@@ -38,26 +40,18 @@ public class ListDetailActivity extends AppCompatActivity implements ListDetailP
         textViewTotalSuma.setText("Cargando...");
         listDetailProduct = new ListDetailProduct(this, DataGNB.getConversiones(), DataGNB.getTransacciones(), sku);
         listView.setAdapter(listDetailProduct.getAdapter());
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_lista_de_producto_seleccionado, menu);
-        return true;
+        //Mostramos un Toast indicando el valor en EUR del item seleccionado.
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(ListDetailActivity.this, ListDetailActivity.this.getText(R.string.total) + " " + listDetailProduct.getTotalEurOfItem(position).toString()+ " EUR", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         if(id == android.R.id.home){
             finish();
@@ -82,4 +76,5 @@ public class ListDetailActivity extends AppCompatActivity implements ListDetailP
         listDetailProduct.cancelObtenerDatos();
         super.onBackPressed();
     }
+
 }

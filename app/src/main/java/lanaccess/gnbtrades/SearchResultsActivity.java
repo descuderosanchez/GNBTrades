@@ -32,5 +32,6 @@ public class SearchResultsActivity extends Activity {
             finish();
         }
     }
+
 }
 

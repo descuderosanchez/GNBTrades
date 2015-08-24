@@ -3,6 +3,8 @@ package lanaccess.gnbtrades;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,6 +48,8 @@ public class DataGNB {
     //Constructor
     public DataGNB(Activity context){
         this.context = context;
+        conversiones = new ArrayList<ConversionDivisas>();
+        transacciones = new ArrayList<Transaccion>();
         //Creamos el nuevo adapter vinculado a nuestra actividad.
         adapter = new AdapterListProducts(context, transacciones);
         isSkuUnicos = false;
@@ -72,6 +76,11 @@ public class DataGNB {
         return adapter;
     }
 
+    /**
+     * Dada una posición del array de transacciones, devuelve su SKU
+     * @param position Posición del array de Transacciones o del array de SKU's
+     * @return Devuelve un string con el SKU
+     */
     public String getSkuOfPosition(int position){
         if(isSkuUnicos){
             return skuList.get(position).getSkuTittle();
@@ -80,14 +89,19 @@ public class DataGNB {
         }
     }
 
-    public boolean isSkuUnicos(){
-        return isSkuUnicos;
-    }
-
     public List<String> getListStringOfSkus(){
         return listStringOfSkus;
     }
     //...FIN GETTERS
+
+    /**
+     * Devuelve si la vista actual es de solo SKU's o la lista completa.
+     * @return [True: si la vista actual es de solo los SKU's.]
+     *         [False: si la vista actual es de todas las transacciones.]
+     */
+    public boolean isSkuUnicos(){
+        return isSkuUnicos;
+    }
 
     /**
      * Cambia el AdapterList para mostrar los SKU's Unicos de todas las transacciones.
@@ -154,8 +168,14 @@ public class DataGNB {
      * Metodo encargado de llamar a la descarga de las transacciones.
      */
     private void tareaDeDescarga(final String url) {
-
+        final ProgressBar pbHeaderProgress = (ProgressBar) context.findViewById(R.id.pbHeaderProgress);
         AsyncTask<Void, Void, StringBuilder> task = new AsyncTask<Void, Void, StringBuilder>() {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                pbHeaderProgress.setVisibility(View.VISIBLE);
+            }
 
             @Override
             protected StringBuilder doInBackground(Void... params) {
@@ -167,6 +187,10 @@ public class DataGNB {
                 return null;
             }
 
+            /**
+             * Dependiendo de la URL parsearemos unos datos u otros.
+             * @param builder Datos a parsear.
+             */
             @Override
             protected void onPostExecute(StringBuilder builder) {
                 try {
@@ -184,6 +208,7 @@ public class DataGNB {
                             }
                             adapter.setNotifyOnChange(true);
                             prepararVistaDeSoloSkus();
+                            pbHeaderProgress.setVisibility(View.GONE);
                         } else {
                             //Parseamos Conversiones.
                             JSONArray jsonArray = new JSONArray(builder.toString());
@@ -203,6 +228,9 @@ public class DataGNB {
         task.execute((Void[]) null);
     }
 
+    /**
+     * Elimina los productos con SKUs duplicados y los agrega a un List<String>
+     */
     private void prepararVistaDeSoloSkus(){
         listStringOfSkus = new ArrayList<>();
         skuList = new ArrayList<Transaccion>();
